@@ -37,7 +37,23 @@ class OffParser extends X3D .X3DParser
 
       scene .setEncoding ("OFF");
       scene .setProfile (browser .getProfile ("Interchange"));
-      scene .updateComponent (browser .getComponent ("Sound", 1));
+
+      await this .loadComponents ();
+
+      // Geometry
+
+      const
+         shapeNode      = scene .createNode ("Shape"),
+         appearanceNode = scene .createNode ("Appearance"),
+         materialNode   = scene .createNode ("Material"),
+         boxNode        = scene .createNode ("Box");
+
+      appearanceNode .material = materialNode;
+
+      shapeNode .appearance = appearanceNode;
+      shapeNode .geometry   = boxNode;
+
+      scene .rootNodes .push (shapeNode);
 
       return scene;
    }
