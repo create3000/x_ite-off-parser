@@ -16,3 +16,9 @@ Now you can load OFF files:
 ```html
 <x3d-canvas src="cube.off"></x3d-canvas>
 ```
+
+You can also install it from npm:
+
+```sh
+npm i x_ite-off-parser
+```
