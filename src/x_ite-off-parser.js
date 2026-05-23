@@ -1,4 +1,23 @@
-console .info ("x_ite-off-parser loaded.");
+
+/*
+ *  Grammar
+ */
+
+// Lexical elements
+const Grammar = X3D .Expressions ({
+   // General
+   whitespaces: /[\x20\n\t\r,]+/y,
+   comment: /#[^\r\n]*(?=[\r\n]|$)/y,
+   header: /OFF/y,
+
+   // Values
+   int32:  /(?:0[xX][\da-fA-F]+)|(?:[+-]?\d+)/y,
+   double: /[+-]?(?:(?:(?:\d*\.\d+)|(?:\d+(?:\.)?))(?:[eE][+-]?\d+)?)/y,
+});
+
+/*
+ * Parser
+ */
 
 class OffParser extends X3D .X3DParser
 {
@@ -55,7 +74,90 @@ class OffParser extends X3D .X3DParser
 
       scene .rootNodes .push (shapeNode);
 
+      this .header ();
+
+      if (!this .counts ())
+         throw new Error ("Invalid file structure.");
+
       return scene;
+   }
+
+   comments ()
+   {
+      while (this .comment ())
+         ;
+   }
+
+   comment ()
+   {
+      this .whitespaces ();
+
+      if (Grammar .comment .parse (this))
+         return true;
+
+      return false;
+   }
+
+   whitespaces ()
+   {
+      Grammar .whitespaces .parse (this);
+   }
+
+   header ()
+   {
+      return Grammar .header .parse (this);
+   }
+
+   counts ()
+   {
+      this .comments ();
+
+      if (this .int32 ())
+      {
+         this .numVertices = this .value;
+
+         if (this .int32 ())
+         {
+            this .numFaces = this .value;
+
+            if (this .int32 ())
+            {
+               this .numEdges = this .value;
+
+               return true;
+            }
+         }
+      }
+
+      return false;
+   }
+
+   int32 ()
+   {
+      this .whitespaces ();
+
+      if (Grammar .int32 .parse (this))
+      {
+         this .value = parseInt (this .result [0]);
+
+         return true;
+      }
+
+      return false;
+   }
+
+   double ()
+   {
+      this .whitespaces ();
+
+      if (Grammar .double .parse (this))
+      {
+         this .value = parseFloat (this .result [0]);
+
+         return true;
+      }
+
+      return false;
    }
 }
 
