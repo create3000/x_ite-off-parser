@@ -201,7 +201,9 @@ class OffParser extends X3D .X3DParser
    listOfFaces ()
    {
       const
+         colorIndex = this .colorIndex,
          coordIndex = this .coordIndex,
+         colors     = this .colors,
          numFaces   = this .numFaces;
 
       for (let f = 0; f < numFaces; ++ f)
@@ -227,16 +229,16 @@ class OffParser extends X3D .X3DParser
 
             if (this .int32 ())
             {
-               this .colors .push (this .value / 255);
+               colors .push (this .value / 255);
 
                if (this .int32 ())
                {
-                  this .colors .push (this .value / 255);
+                  colors .push (this .value / 255);
 
                   if (this .int32 ())
                   {
-                     this .colors .push (this .value / 255);
-                     this .colorIndex .push (this .colorIndex .length);
+                     colors .push (this .value / 255);
+                     colorIndex .push (colorIndex .length);
                   }
                }
             }
