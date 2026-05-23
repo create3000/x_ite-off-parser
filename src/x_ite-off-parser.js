@@ -24,6 +24,8 @@ class OffParser extends X3D .X3DParser
    constructor (scene)
    {
       super (scene);
+
+      this .vertices = [ ];
    }
 
    getEncoding ()
@@ -74,12 +76,27 @@ class OffParser extends X3D .X3DParser
 
       scene .rootNodes .push (shapeNode);
 
-      this .header ();
-
-      if (!this .counts ())
+      if (!this .statements ())
          throw new Error ("Invalid file structure.");
 
+      console .log (this .vertices)
+
       return scene;
+   }
+
+   statements ()
+   {
+      this .header ();
+
+      if (this .counts ())
+      {
+         if (this .listOfVertices ())
+         {
+            return true;
+         }
+      }
+
+      return false;
    }
 
    comments ()
@@ -130,6 +147,36 @@ class OffParser extends X3D .X3DParser
       }
 
       return false;
+   }
+
+   listOfVertices ()
+   {
+      const numVertices = this .numVertices;
+
+      for (let i = 0; i < numVertices; ++ i)
+      {
+         this .comment ();
+
+         if (this .double ())
+         {
+            this .vertices .push (this .value);
+
+            if (this .double ())
+            {
+               this .vertices .push (this .value);
+
+               if (this .double ())
+               {
+                  this .vertices .push (this .value);
+                  continue;
+               }
+            }
+         }
+
+         return false;
+      }
+
+      return true;
    }
 
    int32 ()
