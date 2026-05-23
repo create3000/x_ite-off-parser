@@ -11,7 +11,7 @@ Include the script after X_ITE:
 <script defer src="https://cdn.jsdelivr.net/npm/x_ite-off-parser@1.0.0/dist/x_ite-off-parser.js"></script>
 ```
 
-Then you can load OFF files:
+Now you can load OFF files:
 
 ```html
 <x3d-canvas src="cube.off"></x3d-canvas>
