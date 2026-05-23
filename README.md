@@ -22,3 +22,7 @@ You can also install it from npm:
 ```sh
 npm i x_ite-off-parser
 ```
+
+## License
+
+x_ite-off-parser is free software and licensed under the [MIT License](LICENSE.md).
