@@ -25,7 +25,10 @@ class OffParser extends X3D .X3DParser
    {
       super (scene);
 
-      this .vertices = [ ];
+      this .coordIndex = [ ];
+      this .colorIndex = [ ];
+      this .colors     = [ ];
+      this .points     = [ ];
    }
 
    getEncoding ()
@@ -67,19 +70,34 @@ class OffParser extends X3D .X3DParser
          shapeNode      = scene .createNode ("Shape"),
          appearanceNode = scene .createNode ("Appearance"),
          materialNode   = scene .createNode ("Material"),
-         boxNode        = scene .createNode ("Box");
+         geometry       = scene .createNode ("IndexedFaceSet"),
+         coordinate     = scene .createNode ("Coordinate");
+
+      geometry .coord = coordinate;
 
       appearanceNode .material = materialNode;
 
       shapeNode .appearance = appearanceNode;
-      shapeNode .geometry   = boxNode;
+      shapeNode .geometry   = geometry;
 
       scene .rootNodes .push (shapeNode);
 
       if (!this .statements ())
          throw new Error ("Invalid file structure.");
 
-      console .log (this .vertices)
+      coordinate .point    = this .points;
+      geometry .coordIndex = this .coordIndex;
+
+      if (this .colors .length)
+      {
+         const color = scene .createNode ("Color");
+
+         color .color = this .colors;
+
+         geometry .colorPerVertex = false;
+         geometry .colorIndex     = this .colorIndex;
+         geometry .color          = color;
+      }
 
       return scene;
    }
@@ -92,7 +110,8 @@ class OffParser extends X3D .X3DParser
       {
          if (this .listOfVertices ())
          {
-            return true;
+            if (this .listOfFaces ())
+               return true;
          }
       }
 
@@ -151,26 +170,80 @@ class OffParser extends X3D .X3DParser
 
    listOfVertices ()
    {
-      const numVertices = this .numVertices;
+      const
+         numVertices = this .numVertices,
+         points      = this .points;
 
-      for (let i = 0; i < numVertices; ++ i)
+      for (let v = 0; v < numVertices; ++ v)
       {
-         this .comment ();
+         this .comments ();
 
          if (this .double ())
          {
-            this .vertices .push (this .value);
+            points .push (this .value);
 
             if (this .double ())
             {
-               this .vertices .push (this .value);
+               points .push (this .value);
 
                if (this .double ())
                {
-                  this .vertices .push (this .value);
+                  points .push (this .value);
                   continue;
                }
             }
+         }
+
+         return false;
+      }
+
+      return true;
+   }
+
+   listOfFaces ()
+   {
+      const
+         coordIndex = this .coordIndex,
+         numFaces   = this .numFaces;
+
+      for (let f = 0; f < numFaces; ++ f)
+      {
+         this .comments ();
+
+         if (this .int32 ())
+         {
+            const numIndices = this .value;
+
+            for (let i = 0; i < numIndices; ++ i)
+            {
+               if (this .int32 ())
+               {
+                  coordIndex .push (this .value);
+                  continue;
+               }
+
+               return false;
+            }
+
+            coordIndex .push (-1);
+
+            if (this .int32 ())
+            {
+               this .colors .push (this .value);
+
+               if (this .int32 ())
+               {
+                  this .colors .push (this .value);
+
+                  if (this .int32 ())
+                  {
+                     this .colors .push (this .value);
+                     this .colorIndex .push (this .colorIndex .length);
+                  }
+               }
+            }
+
+            continue;
          }
 
          return false;
