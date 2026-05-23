@@ -59,6 +59,9 @@ class OffParser extends X3D .X3DParser
          browser = this .getBrowser (),
          scene   = this .getScene ();
 
+      if (!this .statements ())
+         throw new Error ("Invalid file structure.");
+
       scene .setEncoding ("OFF");
       scene .setProfile (browser .getProfile ("Interchange"));
 
@@ -73,21 +76,6 @@ class OffParser extends X3D .X3DParser
          geometry       = scene .createNode ("IndexedFaceSet"),
          coordinate     = scene .createNode ("Coordinate");
 
-      geometry .coord = coordinate;
-
-      appearanceNode .material = materialNode;
-
-      shapeNode .appearance = appearanceNode;
-      shapeNode .geometry   = geometry;
-
-      scene .rootNodes .push (shapeNode);
-
-      if (!this .statements ())
-         throw new Error ("Invalid file structure.");
-
-      coordinate .point    = this .points;
-      geometry .coordIndex = this .coordIndex;
-
       if (this .colors .length)
       {
          const color = scene .createNode ("Color");
@@ -98,6 +86,17 @@ class OffParser extends X3D .X3DParser
          geometry .colorIndex     = this .colorIndex;
          geometry .color          = color;
       }
+
+      coordinate .point    = this .points;
+      geometry .coordIndex = this .coordIndex;
+
+      geometry .coord          = coordinate;
+      appearanceNode .material = materialNode;
+
+      shapeNode .appearance = appearanceNode;
+      shapeNode .geometry   = geometry;
+
+      scene .rootNodes .push (shapeNode);
 
       return scene;
    }
