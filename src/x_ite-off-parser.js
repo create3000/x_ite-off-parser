@@ -227,15 +227,15 @@ class OffParser extends X3D .X3DParser
 
             if (this .int32 ())
             {
-               this .colors .push (this .value);
+               this .colors .push (this .value / 255);
 
                if (this .int32 ())
                {
-                  this .colors .push (this .value);
+                  this .colors .push (this .value / 255);
 
                   if (this .int32 ())
                   {
-                     this .colors .push (this .value);
+                     this .colors .push (this .value / 255);
                      this .colorIndex .push (this .colorIndex .length);
                   }
                }
