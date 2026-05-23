@@ -27,7 +27,6 @@ class OffParser extends X3D .X3DParser
       super (scene);
 
       this .coordIndex = [ ];
-      this .colorIndex = [ ];
       this .colors     = [ ];
       this .points     = [ ];
    }
@@ -83,7 +82,6 @@ class OffParser extends X3D .X3DParser
 
          color .color             = this .colors;
          geometry .colorPerVertex = false;
-         geometry .colorIndex     = this .colorIndex;
          geometry .color          = color;
       }
 
@@ -202,7 +200,6 @@ class OffParser extends X3D .X3DParser
    listOfFaces ()
    {
       const
-         colorIndex = this .colorIndex,
          coordIndex = this .coordIndex,
          colors     = this .colors,
          numFaces   = this .numFaces;
@@ -237,10 +234,7 @@ class OffParser extends X3D .X3DParser
                   colors .push (this .value / 255);
 
                   if (this .int32 ())
-                  {
                      colors .push (this .value / 255);
-                     colorIndex .push (colorIndex .length);
-                  }
                }
             }
 
