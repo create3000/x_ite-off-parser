@@ -1,5 +1,10 @@
 # x_ite-off-parser
 
+[![npm Version](https://img.shields.io/npm/v/x_ite-off-parser)](https://www.npmjs.com/package/x_ite-off-parser)
+[![Build Size](https://img.shields.io/bundlephobia/minzip/x_ite-off-parser)](https://bundlephobia.com/package/x_ite-off-parser)
+[![jsDelivr Hits](https://data.jsdelivr.com/v1/package/npm/x_ite-off-parser/badge?style=rounded)](https://create3000.github.io/jsdelivr-download-stats/?username=create3000&repository=x_ite)
+[![npm Downloads](https://img.shields.io/npm/dm/x_ite-off-parser)](https://npmtrends.com/x_ite-off-parser)
+
 OFF 3D File Format Parser for [X_ITE](https://create3000.github.io/x_ite/)
 
 ## Usage
