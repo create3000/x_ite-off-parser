@@ -8,6 +8,7 @@ const X3D = window [Symbol .for ("X_ITE.X3D")];
 const Grammar = X3D .Expressions ({
    // General
    whitespaces: /[\x20\n\t\r,]+/y,
+   whitespacesNoLineTerminator: /[\x20\t]+/y,
    comment: /#[^\r\n]*(?=[\r\n]|$)/y,
    header: /OFF/y,
 
@@ -136,6 +137,11 @@ class OffParser extends X3D .X3DParser
       Grammar .whitespaces .parse (this);
    }
 
+   whitespacesNoLineTerminator ()
+   {
+      Grammar .whitespacesNoLineTerminator .parse (this);
+   }
+
    header ()
    {
       return Grammar .header .parse (this);
@@ -249,7 +255,7 @@ class OffParser extends X3D .X3DParser
 
    int32 ()
    {
-      this .whitespaces ();
+      this .whitespacesNoLineTerminator ();
 
       if (Grammar .int32 .parse (this))
       {
@@ -263,7 +269,7 @@ class OffParser extends X3D .X3DParser
 
    double ()
    {
-      this .whitespaces ();
+      this .whitespacesNoLineTerminator ();
 
       if (Grammar .double .parse (this))
       {
