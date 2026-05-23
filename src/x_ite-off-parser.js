@@ -80,8 +80,7 @@ class OffParser extends X3D .X3DParser
       {
          const color = scene .createNode ("Color");
 
-         color .color = this .colors;
-
+         color .color             = this .colors;
          geometry .colorPerVertex = false;
          geometry .colorIndex     = this .colorIndex;
          geometry .color          = color;
@@ -89,8 +88,8 @@ class OffParser extends X3D .X3DParser
 
       coordinate .point    = this .points;
       geometry .coordIndex = this .coordIndex;
+      geometry .coord      = coordinate;
 
-      geometry .coord          = coordinate;
       appearanceNode .material = materialNode;
 
       shapeNode .appearance = appearanceNode;
