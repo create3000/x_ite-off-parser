@@ -28,6 +28,7 @@ class OffParser extends X3D .X3DParser
    {
       super (scene);
 
+      this .lineNumber = 1;
       this .coordIndex = [ ];
       this .colors     = [ ];
       this .points     = [ ];
@@ -62,7 +63,7 @@ class OffParser extends X3D .X3DParser
          scene   = this .getScene ();
 
       if (!this .statements ())
-         throw new Error ("Invalid file structure.");
+         throw new Error (`Invalid file structure at line ${this .lineNumber}.`);
 
       scene .setEncoding ("OFF");
       scene .setProfile (browser .getProfile ("Interchange"));
@@ -249,7 +250,8 @@ class OffParser extends X3D .X3DParser
 
    whitespaces ()
    {
-      Grammar .whitespaces .parse (this);
+      if (Grammar .whitespaces .parse (this))
+         this .lines (this .result [0]);
    }
 
    whitespacesNoLineTerminator ()
@@ -260,6 +262,14 @@ class OffParser extends X3D .X3DParser
    untilEndOfLine ()
    {
       Grammar .untilEndOfLine .parse (this);
+   }
+
+   lines (string)
+   {
+      const match = string .match (Grammar .LineFeed);
+
+      if (match)
+         this .lineNumber += match .length;
    }
 
    int32 ()
