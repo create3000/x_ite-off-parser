@@ -13,6 +13,25 @@ $("#view-all") .on ("click", () =>
 {
   X3D .getBrowser () .viewAll ();
 });
+
+$("#file-input") .on ("change", (event) =>
+{
+  const file = event .target .files [0];
+
+  if (file)
+  {
+    const reader = new FileReader ();
+
+    reader .onload = (event) =>
+    {
+      const content = event .target .result;
+
+      X3D .getBrowser () .loadURL (new X3D .MFString (`data:model/off;base64,${btoa(content)}`));
+    };
+
+    reader .readAsText (file);
+  }
+});
     </script>
     <style>
 :root {
@@ -37,7 +56,7 @@ x3d-canvas {
 
 <x3d-canvas id="x3d-canvas" src="tri1-grid.off" debug="true"></x3d-canvas>
 <br>
-<button id="view-all">View All</button>
+<button id="view-all">View All</button> <input type="file" id="file-input" accept=".off">
 
   </body>
 </html>
