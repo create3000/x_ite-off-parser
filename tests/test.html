@@ -26,7 +26,7 @@ $("#file-input") .on ("change", (event) =>
     {
       const content = event .target .result;
 
-      X3D .getBrowser () .loadURL (new X3D .MFString (`data:model/off;base64,${btoa(content)}`));
+      X3D .getBrowser () .loadURL (new X3D .MFString (`data:model/off;base64,${btoa (content)}`));
     };
 
     reader .readAsText (file);
