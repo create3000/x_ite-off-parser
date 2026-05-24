@@ -9,6 +9,7 @@ const Grammar = X3D .Expressions ({
    // General
    whitespaces: /[\x20\n\t\r,]+/y,
    whitespacesNoLineTerminator: /[\x20\t]+/y,
+   untilEndOfLine: /[^\r\n]+/y,
    comment: /#[^\r\n]*(?=[\r\n]|$)/y,
    header: /OFF/y,
 
@@ -44,7 +45,7 @@ class OffParser extends X3D .X3DParser
 
    isValid ()
    {
-      return this .input .match (/OFF\r?\n/);
+      return this .input .match (/^OFF/);
    }
 
    parseIntoScene (resolve, reject)
@@ -192,6 +193,7 @@ class OffParser extends X3D .X3DParser
                if (this .double ())
                {
                   points .push (this .value);
+                  Grammar .untilEndOfLine .parse (this);
                   continue;
                }
             }
@@ -244,6 +246,7 @@ class OffParser extends X3D .X3DParser
                }
             }
 
+            Grammar .untilEndOfLine .parse (this);
             continue;
          }
 
