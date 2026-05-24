@@ -2,8 +2,18 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <script defer
+        src="https://code.jquery.com/jquery-4.0.0.slim.min.js"
+        integrity="sha384-tcspKDb5tWvyRCOWzevlAeQgHeEzYdUHJpcgnIhcP9w4CnfD7DLAcS+k9QzLbRJO"
+        crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/x_ite@latest/dist/x_ite.min.js"></script>
     <script defer src="../dist/x_ite-off-parser.js"></script>
+    <script type="module">
+$("#view-all").on ("click", () =>
+{
+  X3D .getBrowser () .viewAll ();
+});
+    </script>
     <style>
 :root {
   color-scheme: light dark;
@@ -26,6 +36,8 @@ x3d-canvas {
 <x3d-canvas id="x3d-canvas" src="cube.off" debug="true"></x3d-canvas> -->
 
 <x3d-canvas id="x3d-canvas" src="tri1-grid.off" debug="true"></x3d-canvas>
+<br>
+<button id="view-all">View All</button>
 
   </body>
 </html>
