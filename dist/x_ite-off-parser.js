@@ -117,32 +117,6 @@ class OffParser extends X3D .X3DParser
       return false;
    }
 
-   comments ()
-   {
-      while (this .comment ())
-         ;
-   }
-
-   comment ()
-   {
-      this .whitespaces ();
-
-      if (Grammar .comment .parse (this))
-         return true;
-
-      return false;
-   }
-
-   whitespaces ()
-   {
-      Grammar .whitespaces .parse (this);
-   }
-
-   whitespacesNoLineTerminator ()
-   {
-      Grammar .whitespacesNoLineTerminator .parse (this);
-   }
-
    header ()
    {
       return Grammar .header .parse (this);
@@ -193,7 +167,8 @@ class OffParser extends X3D .X3DParser
                if (this .double ())
                {
                   points .push (this .value);
-                  Grammar .untilEndOfLine .parse (this);
+
+                  this .untilEndOfLine ();
                   continue;
                }
             }
@@ -246,7 +221,7 @@ class OffParser extends X3D .X3DParser
                }
             }
 
-            Grammar .untilEndOfLine .parse (this);
+            this .untilEndOfLine ();
             continue;
          }
 
@@ -254,6 +229,37 @@ class OffParser extends X3D .X3DParser
       }
 
       return true;
+   }
+
+   comments ()
+   {
+      while (this .comment ())
+         ;
+   }
+
+   comment ()
+   {
+      this .whitespaces ();
+
+      if (Grammar .comment .parse (this))
+         return true;
+
+      return false;
+   }
+
+   whitespaces ()
+   {
+      Grammar .whitespaces .parse (this);
+   }
+
+   whitespacesNoLineTerminator ()
+   {
+      Grammar .whitespacesNoLineTerminator .parse (this);
+   }
+
+   untilEndOfLine ()
+   {
+      Grammar .untilEndOfLine .parse (this);
    }
 
    int32 ()
