@@ -40,6 +40,7 @@ $("#file-input") .on ("change", (event) =>
 
 body {
   background: light-dark(rgb(255, 255, 255), rgb(27, 27, 30));
+  font-family: system-ui, sans-serif;
 }
 
 x3d-canvas {
@@ -51,9 +52,7 @@ x3d-canvas {
     </style>
   </head>
   <body>
-<!--
-<x3d-canvas id="x3d-canvas" src="cube.off" debug="true"></x3d-canvas> -->
-
+<h1>OFF File Test Page</h1>
 <x3d-canvas id="x3d-canvas" src="tri1-grid.off" debug="true"></x3d-canvas>
 <br>
 <button id="view-all">View All</button> <input type="file" id="file-input" accept=".off">
