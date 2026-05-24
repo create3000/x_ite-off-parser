@@ -63,7 +63,7 @@ class OffParser extends X3D .X3DParser
          scene   = this .getScene ();
 
       if (!this .statements ())
-         throw new Error (`Invalid file structure at line ${this .lineNumber}.`);
+         throw new Error (`Couldn't parse OFF file: Invalid file structure at line ${this .lineNumber}.`);
 
       scene .setEncoding ("OFF");
       scene .setProfile (browser .getProfile ("Interchange"));
