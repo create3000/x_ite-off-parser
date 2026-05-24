@@ -78,7 +78,7 @@ class OffParser extends X3D .X3DParser
          geometry       = scene .createNode ("IndexedFaceSet"),
          coordinate     = scene .createNode ("Coordinate");
 
-      if (this .colors .length)
+      if (this .colors .length / 3 === this .numFaces)
       {
          const color = scene .createNode ("Color");
 
