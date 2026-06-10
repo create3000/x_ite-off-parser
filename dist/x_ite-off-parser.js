@@ -81,9 +81,11 @@ class OffParser extends X3D .X3DParser
 
       if (this .colors .length / 3 === this .numFaces)
       {
-         const color = scene .createNode ("Color");
+         const
+            color = scene .createNode ("Color"),
+            RGB   = this .colors .some (value => value > 1);
 
-         color .color             = this .colors;
+         color .color             = RGB ? this .colors .map (value => value / 255) : this .colors;
          geometry .colorPerVertex = false;
          geometry .color          = color;
       }
@@ -209,16 +211,16 @@ class OffParser extends X3D .X3DParser
 
             coordIndex .push (-1);
 
-            if (this .int32 ())
+            if (this .double ())
             {
-               colors .push (this .value / 255);
+               const r = this .value;
 
-               if (this .int32 ())
+               if (this .double ())
                {
-                  colors .push (this .value / 255);
+                  const g = this .value;
 
-                  if (this .int32 ())
-                     colors .push (this .value / 255);
+                  if (this .double ())
+                     colors .push (r, g, this .value);
                }
             }
 
