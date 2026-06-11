@@ -81,11 +81,9 @@ class OffParser extends X3D .X3DParser
 
       if (this .colors .length / 3 === this .numFaces)
       {
-         const
-            color = scene .createNode ("Color"),
-            RGB   = this .colors .some (value => value > 1);
+         const color = scene .createNode ("Color");
 
-         color .color             = RGB ? this .colors .map (value => value / 255) : this .colors;
+         color .color             =  this .colors;
          geometry .colorPerVertex = false;
          geometry .color          = color;
       }
@@ -190,6 +188,8 @@ class OffParser extends X3D .X3DParser
          colors     = this .colors,
          numFaces   = this .numFaces;
 
+      let face = 0;
+
       for (let f = 0; f < numFaces; ++ f)
       {
          this .comments ();
@@ -198,30 +198,54 @@ class OffParser extends X3D .X3DParser
          {
             const numIndices = this .value;
 
-            for (let i = 0; i < numIndices; ++ i)
+            if (numIndices >= 3)
             {
+               for (let i = 0; i < numIndices; ++ i)
+               {
+                  if (this .int32 ())
+                  {
+                     coordIndex .push (this .value);
+                     continue;
+                  }
+
+                  return false;
+               }
+
+               coordIndex .push (-1);
+
+               const lastIndex = this .lastIndex;
+
                if (this .int32 ())
                {
-                  coordIndex .push (this .value);
-                  continue;
+                  const r = this .value;
+
+                  if (this .int32 ())
+                  {
+                     const g = this .value;
+
+                     if (this .int32 ())
+                        colors .push (r / 255, g / 255, this .value / 255);
+                  }
+                  else
+                  {
+                     this .lastIndex = lastIndex;
+
+                     if (this .double ())
+                     {
+                        const r = this .value;
+
+                        if (this .double ())
+                        {
+                           const g = this .value;
+
+                           if (this .double ())
+                              colors .push (r, g, this .value);
+                        }
+                     }
+                  }
                }
 
-               return false;
-            }
-
-            coordIndex .push (-1);
-
-            if (this .double ())
-            {
-               const r = this .value;
-
-               if (this .double ())
-               {
-                  const g = this .value;
-
-                  if (this .double ())
-                     colors .push (r, g, this .value);
-               }
+               ++ face;
             }
 
             this .untilEndOfLine ();
@@ -230,6 +254,8 @@ class OffParser extends X3D .X3DParser
 
          return false;
       }
+
+      this .numFaces = face;
 
       return true;
    }
