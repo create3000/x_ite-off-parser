@@ -8,7 +8,7 @@
     "dist/*"
   ],
   "scripts": {
-    "dist": "cp ./dist/x_ite-off-parser.js ./src/x_ite-off-parser.js",
+    "dist": "cp ./src/x_ite-off-parser.js ./dist/x_ite-off-parser.js",
     "prerelease": "npm run dist",
     "release": "node build/release.js"
   },
