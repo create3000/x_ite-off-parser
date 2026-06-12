@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "dist": "terser -c -m -o ./dist/x_ite-off-parser.js ./src/x_ite-off-parser.js",
+    "prerelease": "npm run dist",
     "release": "node build/release.js"
   },
   "repository": {
