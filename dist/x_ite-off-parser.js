@@ -1,3 +1,4 @@
+/******/ (() => { // webpackBootstrap
 const X3D = window [Symbol .for ("X_ITE.X3D")];
 
 /*
@@ -330,3 +331,6 @@ class OffParser extends X3D .X3DParser
 }
 
 X3D .GoldenGate .addParsers (OffParser);
+
+/******/ })()
+;
