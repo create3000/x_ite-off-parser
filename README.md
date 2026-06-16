@@ -19,11 +19,15 @@ Include the script after X_ITE:
 <script type="module" src="https://cdn.jsdelivr.net/npm/x_ite-off-parser@1.0.8/dist/x_ite-off-parser.min.js"></script>
 ```
 
-Now you can load OFF files:
+Now you can load OFF files with the `data-src` attribute:
 
 ```html
-<x3d-canvas src="cube.off"></x3d-canvas>
+<x3d-canvas data-src="cube.off"></x3d-canvas>
 ```
+
+Or use `.off` files as source of an Inline node.
+
+## NPM
 
 You can also install it from npm:
 
