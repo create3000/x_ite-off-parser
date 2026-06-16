@@ -332,5 +332,23 @@ class OffParser extends X3D .X3DParser
 
 X3D .GoldenGate .addParsers (OffParser);
 
+// Check data-src attribute and set src attribute if any.
+
+const canvases = document .querySelectorAll ("x3d-canvas");
+
+for (const canvas of canvases)
+{
+  const
+   browser = X3D .getBrowser (canvas),
+   element = browser .element,
+   src     = element .getAttribute ("data-src");
+
+   if (!src)
+      continue;
+
+   element .setAttribute ("src", src);
+   element .removeAttribute ("data-src");
+}
+
 /******/ })()
 ;
