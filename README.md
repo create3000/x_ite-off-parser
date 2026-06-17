@@ -19,7 +19,7 @@ Include the script after X_ITE:
 <script type="module" src="https://cdn.jsdelivr.net/npm/x_ite-off-parser@1.1.0/dist/x_ite-off-parser.min.js"></script>
 ```
 
-Now you can directly load `.off` files with the `src` attribute, but you also have to add the `extensions` attribute with a number, how many X_ITE extension you have included. Each extension will decrease this count and when it becomes `0`, the canvas knows that all extensions are loaded and now starts loading the file in the `src` attribute.
+You can now load `.off` files directly using the `src` attribute, but you also have to add the `extensions` attribute with a number indicating how many X_ITE extension have been included. Each extension will decrement this count and when it becomes `0`, the canvas knows that all extensions have been loaded and now starts loading the file in the `src` attribute.
 
 You can also use `.off` files as source of an Inline node.
 
