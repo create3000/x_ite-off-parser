@@ -22,7 +22,7 @@ Include the script before X_ITE:
 You can now load `.off` files directly using the `src` attribute, but you can also use `.off` files as source of an Inline node.
 
 ```html
-<x3d-canvas src="cube.off" extensions="1"></x3d-canvas>
+<x3d-canvas src="cube.off"></x3d-canvas>
 ```
 
 ## NPM
