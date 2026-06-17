@@ -3,7 +3,7 @@ import register from "../node_modules/x_ite-extension/dist/x_ite-extension.js";
 register (X3D =>
 {
    /*
-   *  Grammar
+   *  Off Grammar
    */
 
    // Lexical elements
@@ -21,11 +21,16 @@ register (X3D =>
    });
 
    /*
-   * Parser
+   * Off Parser
    */
 
    class OffParser extends X3D .X3DParser
    {
+      static
+      {
+         X3D .GoldenGate .addParsers (this);
+      }
+
       constructor (scene)
       {
          super (scene);
@@ -330,6 +335,4 @@ register (X3D =>
          return false;
       }
    }
-
-   X3D .GoldenGate .addParsers (OffParser);
 });
