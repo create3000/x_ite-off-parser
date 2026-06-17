@@ -1,165 +1,163 @@
-const X3D = window [Symbol .for ("X_ITE.X3D")];
+import register from "../node_modules/x_ite-extension/dist/x_ite-extension.js";
 
-/*
- *  Grammar
- */
-
-// Lexical elements
-const Grammar = X3D .Expressions ({
-   // General
-   whitespaces: /[\x20\n\t\r,]+/y,
-   whitespacesNoLineTerminator: /[\x20\t]+/y,
-   untilEndOfLine: /[^\r\n]+/y,
-   comment: /#[^\r\n]*(?=[\r\n]|$)/y,
-   header: /OFF/y,
-
-   // Values
-   int32:  /(?:0[xX][\da-fA-F]+)|(?:[+-]?\d+)/y,
-   double: /[+-]?(?:(?:(?:\d*\.\d+)|(?:\d+(?:\.)?))(?:[eE][+-]?\d+)?)/y,
-});
-
-/*
- * Parser
- */
-
-class OffParser extends X3D .X3DParser
+register (X3D =>
 {
-   constructor (scene)
+   /*
+   *  Grammar
+   */
+
+   // Lexical elements
+   const Grammar = X3D .Expressions ({
+      // General
+      whitespaces: /[\x20\n\t\r,]+/y,
+      whitespacesNoLineTerminator: /[\x20\t]+/y,
+      untilEndOfLine: /[^\r\n]+/y,
+      comment: /#[^\r\n]*(?=[\r\n]|$)/y,
+      header: /OFF/y,
+
+      // Values
+      int32:  /(?:0[xX][\da-fA-F]+)|(?:[+-]?\d+)/y,
+      double: /[+-]?(?:(?:(?:\d*\.\d+)|(?:\d+(?:\.)?))(?:[eE][+-]?\d+)?)/y,
+   });
+
+   /*
+   * Parser
+   */
+
+   class OffParser extends X3D .X3DParser
    {
-      super (scene);
-
-      this .lineNumber = 1;
-      this .coordIndex = [ ];
-      this .colors     = [ ];
-      this .points     = [ ];
-   }
-
-   getEncoding ()
-   {
-      return "STRING";
-   }
-
-   setInput (input)
-   {
-      this .input = input;
-   }
-
-   isValid ()
-   {
-      return this .input .match (/^OFF/);
-   }
-
-   parseIntoScene (resolve, reject)
-   {
-      this .off ()
-         .then (resolve)
-         .catch (reject);
-   }
-
-   async off ()
-   {
-      const
-         browser = this .getBrowser (),
-         scene   = this .getScene ();
-
-      if (!this .statements ())
-         throw new Error (`Couldn't parse OFF file: Invalid file structure at line ${this .lineNumber}.`);
-
-      scene .setEncoding ("OFF");
-      scene .setProfile (browser .getProfile ("Interchange"));
-
-      await this .loadComponents ();
-
-      // Geometry
-
-      const
-         shapeNode      = scene .createNode ("Shape"),
-         appearanceNode = scene .createNode ("Appearance"),
-         materialNode   = scene .createNode ("Material"),
-         geometry       = scene .createNode ("IndexedFaceSet"),
-         coordinate     = scene .createNode ("Coordinate");
-
-      if (this .colors .length / 3 === this .numFaces)
+      constructor (scene)
       {
-         const color = scene .createNode ("Color");
+         super (scene);
 
-         color .color             =  this .colors;
-         geometry .colorPerVertex = false;
-         geometry .color          = color;
+         this .lineNumber = 1;
+         this .coordIndex = [ ];
+         this .colors     = [ ];
+         this .points     = [ ];
       }
 
-      coordinate .point    = this .points;
-      geometry .coordIndex = this .coordIndex;
-      geometry .coord      = coordinate;
-
-      appearanceNode .material = materialNode;
-
-      shapeNode .appearance = appearanceNode;
-      shapeNode .geometry   = geometry;
-
-      scene .rootNodes .push (shapeNode);
-
-      return scene;
-   }
-
-   statements ()
-   {
-      this .header ();
-
-      if (this .counts ())
+      getEncoding ()
       {
-         if (this .listOfVertices ())
+         return "STRING";
+      }
+
+      setInput (input)
+      {
+         this .input = input;
+      }
+
+      isValid ()
+      {
+         return this .input .match (/^OFF/);
+      }
+
+      parseIntoScene (resolve, reject)
+      {
+         this .off ()
+            .then (resolve)
+            .catch (reject);
+      }
+
+      async off ()
+      {
+         const
+            browser = this .getBrowser (),
+            scene   = this .getScene ();
+
+         if (!this .statements ())
+            throw new Error (`Couldn't parse OFF file: Invalid file structure at line ${this .lineNumber}.`);
+
+         scene .setEncoding ("OFF");
+         scene .setProfile (browser .getProfile ("Interchange"));
+
+         await this .loadComponents ();
+
+         // Geometry
+
+         const
+            shapeNode      = scene .createNode ("Shape"),
+            appearanceNode = scene .createNode ("Appearance"),
+            materialNode   = scene .createNode ("Material"),
+            geometry       = scene .createNode ("IndexedFaceSet"),
+            coordinate     = scene .createNode ("Coordinate");
+
+         if (this .colors .length / 3 === this .numFaces)
          {
-            if (this .listOfFaces ())
-               return true;
+            const color = scene .createNode ("Color");
+
+            color .color             =  this .colors;
+            geometry .colorPerVertex = false;
+            geometry .color          = color;
          }
+
+         coordinate .point    = this .points;
+         geometry .coordIndex = this .coordIndex;
+         geometry .coord      = coordinate;
+
+         appearanceNode .material = materialNode;
+
+         shapeNode .appearance = appearanceNode;
+         shapeNode .geometry   = geometry;
+
+         scene .rootNodes .push (shapeNode);
+
+         return scene;
       }
 
-      return false;
-   }
-
-   header ()
-   {
-      return Grammar .header .parse (this);
-   }
-
-   counts ()
-   {
-      this .comments ();
-
-      if (this .int32 ())
+      statements ()
       {
-         this .numVertices = this .value;
+         this .header ();
 
-         if (this .int32 ())
+         if (this .counts ())
          {
-            this .numFaces = this .value;
-
-            if (this .int32 ())
+            if (this .listOfVertices ())
             {
-               this .numEdges = this .value;
-
-               return true;
+               if (this .listOfFaces ())
+                  return true;
             }
          }
+
+         return false;
       }
 
-      return false;
-   }
+      header ()
+      {
+         return Grammar .header .parse (this);
+      }
 
-   listOfVertices ()
-   {
-      const
-         numVertices = this .numVertices,
-         points      = this .points;
-
-      for (let v = 0; v < numVertices; ++ v)
+      counts ()
       {
          this .comments ();
 
-         if (this .double ())
+         if (this .int32 ())
          {
-            points .push (this .value);
+            this .numVertices = this .value;
+
+            if (this .int32 ())
+            {
+               this .numFaces = this .value;
+
+               if (this .int32 ())
+               {
+                  this .numEdges = this .value;
+
+                  return true;
+               }
+            }
+         }
+
+         return false;
+      }
+
+      listOfVertices ()
+      {
+         const
+            numVertices = this .numVertices,
+            points      = this .points;
+
+         for (let v = 0; v < numVertices; ++ v)
+         {
+            this .comments ();
 
             if (this .double ())
             {
@@ -169,175 +167,169 @@ class OffParser extends X3D .X3DParser
                {
                   points .push (this .value);
 
-                  this .untilEndOfLine ();
-                  continue;
-               }
-            }
-         }
-
-         return false;
-      }
-
-      return true;
-   }
-
-   listOfFaces ()
-   {
-      const
-         coordIndex = this .coordIndex,
-         colors     = this .colors,
-         numFaces   = this .numFaces;
-
-      let face = 0;
-
-      for (let f = 0; f < numFaces; ++ f)
-      {
-         this .comments ();
-
-         if (this .int32 ())
-         {
-            const numIndices = this .value;
-
-            if (numIndices >= 3)
-            {
-               for (let i = 0; i < numIndices; ++ i)
-               {
-                  if (this .int32 ())
+                  if (this .double ())
                   {
-                     coordIndex .push (this .value);
+                     points .push (this .value);
+
+                     this .untilEndOfLine ();
                      continue;
                   }
-
-                  return false;
                }
+            }
 
-               coordIndex .push (-1);
+            return false;
+         }
 
-               const lastIndex = this .lastIndex;
+         return true;
+      }
 
-               if (this .int32 ())
+      listOfFaces ()
+      {
+         const
+            coordIndex = this .coordIndex,
+            colors     = this .colors,
+            numFaces   = this .numFaces;
+
+         let face = 0;
+
+         for (let f = 0; f < numFaces; ++ f)
+         {
+            this .comments ();
+
+            if (this .int32 ())
+            {
+               const numIndices = this .value;
+
+               if (numIndices >= 3)
                {
-                  const r = this .value;
+                  for (let i = 0; i < numIndices; ++ i)
+                  {
+                     if (this .int32 ())
+                     {
+                        coordIndex .push (this .value);
+                        continue;
+                     }
+
+                     return false;
+                  }
+
+                  coordIndex .push (-1);
+
+                  const lastIndex = this .lastIndex;
 
                   if (this .int32 ())
                   {
-                     const g = this .value;
+                     const r = this .value;
 
                      if (this .int32 ())
-                        colors .push (r / 255, g / 255, this .value / 255);
-                  }
-                  else
-                  {
-                     this .lastIndex = lastIndex;
-
-                     if (this .double ())
                      {
-                        const r = this .value;
+                        const g = this .value;
+
+                        if (this .int32 ())
+                           colors .push (r / 255, g / 255, this .value / 255);
+                     }
+                     else
+                     {
+                        this .lastIndex = lastIndex;
 
                         if (this .double ())
                         {
-                           const g = this .value;
+                           const r = this .value;
 
                            if (this .double ())
-                              colors .push (r, g, this .value);
+                           {
+                              const g = this .value;
+
+                              if (this .double ())
+                                 colors .push (r, g, this .value);
+                           }
                         }
                      }
                   }
+
+                  ++ face;
                }
 
-               ++ face;
+               this .untilEndOfLine ();
+               continue;
             }
 
-            this .untilEndOfLine ();
-            continue;
+            return false;
+         }
+
+         this .numFaces = face;
+
+         return true;
+      }
+
+      comments ()
+      {
+         while (this .comment ())
+            ;
+      }
+
+      comment ()
+      {
+         this .whitespaces ();
+
+         if (Grammar .comment .parse (this))
+            return true;
+
+         return false;
+      }
+
+      whitespaces ()
+      {
+         if (Grammar .whitespaces .parse (this))
+            this .lines (this .result [0]);
+      }
+
+      whitespacesNoLineTerminator ()
+      {
+         Grammar .whitespacesNoLineTerminator .parse (this);
+      }
+
+      untilEndOfLine ()
+      {
+         Grammar .untilEndOfLine .parse (this);
+      }
+
+      lines (string)
+      {
+         const match = string .match (Grammar .LineFeed);
+
+         if (match)
+            this .lineNumber += match .length;
+      }
+
+      int32 ()
+      {
+         this .whitespacesNoLineTerminator ();
+
+         if (Grammar .int32 .parse (this))
+         {
+            this .value = parseInt (this .result [0]);
+
+            return true;
          }
 
          return false;
       }
 
-      this .numFaces = face;
-
-      return true;
-   }
-
-   comments ()
-   {
-      while (this .comment ())
-         ;
-   }
-
-   comment ()
-   {
-      this .whitespaces ();
-
-      if (Grammar .comment .parse (this))
-         return true;
-
-      return false;
-   }
-
-   whitespaces ()
-   {
-      if (Grammar .whitespaces .parse (this))
-         this .lines (this .result [0]);
-   }
-
-   whitespacesNoLineTerminator ()
-   {
-      Grammar .whitespacesNoLineTerminator .parse (this);
-   }
-
-   untilEndOfLine ()
-   {
-      Grammar .untilEndOfLine .parse (this);
-   }
-
-   lines (string)
-   {
-      const match = string .match (Grammar .LineFeed);
-
-      if (match)
-         this .lineNumber += match .length;
-   }
-
-   int32 ()
-   {
-      this .whitespacesNoLineTerminator ();
-
-      if (Grammar .int32 .parse (this))
+      double ()
       {
-         this .value = parseInt (this .result [0]);
+         this .whitespacesNoLineTerminator ();
 
-         return true;
+         if (Grammar .double .parse (this))
+         {
+            this .value = parseFloat (this .result [0]);
+
+            return true;
+         }
+
+         return false;
       }
-
-      return false;
    }
 
-   double ()
-   {
-      this .whitespacesNoLineTerminator ();
-
-      if (Grammar .double .parse (this))
-      {
-         this .value = parseFloat (this .result [0]);
-
-         return true;
-      }
-
-      return false;
-   }
-}
-
-X3D .GoldenGate .addParsers (OffParser);
-
-// Decrement extensions attribute to show that the parser is loaded.
-
-const canvases = document .querySelectorAll ("x3d-canvas");
-
-for (const canvas of canvases)
-{
-   const { element } = X3D .getBrowser (canvas);
-
-   element .setAttribute ("extensions", Math .max ((element .getAttribute ("extensions")|0) - 1, 0));
-}
+   X3D .GoldenGate .addParsers (OffParser);
+});
