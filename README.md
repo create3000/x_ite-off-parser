@@ -19,13 +19,13 @@ Include the script after X_ITE:
 <script type="module" src="https://cdn.jsdelivr.net/npm/x_ite-off-parser@1.0.9/dist/x_ite-off-parser.min.js"></script>
 ```
 
-Now you can load OFF files with the `data-src` attribute:
+Now you can directly load `.off` files with the `src` attribute, but you also have to add the `extensions` attribute with a number, how many X_ITE extension you have included. Each extension will decrease this count and when it becomes `0`, the canvas knows that all extensions are loaded and now starts loading the file in the `src` attribute.
+
+You can also use `.off` files as source of an Inline node.
 
 ```html
-<x3d-canvas data-src="cube.off"></x3d-canvas>
+<x3d-canvas src="cube.off" extensions="1"></x3d-canvas>
 ```
-
-Or use `.off` files as source of an Inline node.
 
 ## NPM
 

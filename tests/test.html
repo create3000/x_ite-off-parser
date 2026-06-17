@@ -54,8 +54,15 @@ x3d-canvas {
     </style>
   </head>
   <body>
+
 <h1>OFF File Test Page</h1>
-<x3d-canvas id="x3d-canvas" data-src="assets/iso_delta_f_3.off" debug="true" oninitialized="X3D.getBrowser().viewAll(0)"></x3d-canvas>
+<x3d-canvas
+    id="x3d-canvas"
+    src="assets/iso_delta_f_3.off"
+    debug="true"
+    extensions="1"
+    oninitialized="X3D.getBrowser().viewAll(0)">
+</x3d-canvas>
 <br>
 <button id="view-all">View All</button> <input type="file" id="file-input" accept=".off">
 
