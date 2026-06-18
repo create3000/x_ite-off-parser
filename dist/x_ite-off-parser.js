@@ -25,7 +25,7 @@
 /************************************************************************/
 var __nested_webpack_exports__ = {};
 /* harmony export */ __nested_webpack_require_43__.d(__nested_webpack_exports__, {
-/* harmony export */   A: () => (/* binding */ register)
+/* harmony export */   A: () => (x_ite_extension)
 /* harmony export */ });
 function register (callback)
 {
@@ -34,8 +34,22 @@ function register (callback)
    if (X3D)
       callback (X3D);
    else
-      (window [Symbol .for ("X_ITE.extensions")] ??= [ ]) .push (callback);
+      getExtensions () .push (callback);
 };
+
+function getExtensions ()
+{
+   const
+      _extensions = Symbol .for ("X_ITE.extensions"),
+      extensions  = window [_extensions];
+
+   if (Array .isArray (extensions))
+      return extensions;
+
+   return window [_extensions] = [ ];
+}
+
+/* harmony default export */ const x_ite_extension = (register);
 
 const __webpack_exports__default = __nested_webpack_exports__.A;
 
@@ -46,7 +60,7 @@ const __webpack_exports__default = __nested_webpack_exports__.A;
 __webpack_exports__default (X3D =>
 {
    /*
-   *  Grammar
+   *  Off Grammar
    */
 
    // Lexical elements
@@ -64,11 +78,16 @@ __webpack_exports__default (X3D =>
    });
 
    /*
-   * Parser
+   * Off Parser
    */
 
    class OffParser extends X3D .X3DParser
    {
+      static
+      {
+         X3D .GoldenGate .addParsers (this);
+      }
+
       constructor (scene)
       {
          super (scene);
@@ -373,8 +392,6 @@ __webpack_exports__default (X3D =>
          return false;
       }
    }
-
-   X3D .GoldenGate .addParsers (OffParser);
 });
 
 /******/ })()
