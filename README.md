@@ -12,10 +12,10 @@ OFF 3D File Format Parser for [X_ITE](https://create3000.github.io/x_ite/)
 Include the script before X_ITE:
 
 ```html
-<script defer src="https://cdn.jsdelivr.net/npm/x_ite-off-parser@1.2.4/dist/x_ite-off-parser.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/x_ite-off-parser@1.3.0/dist/x_ite-off-parser.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/x_ite@VERSION/dist/x_ite.min.js"></script>
 <!-- or as ES module -->
-<script type="module" src="https://cdn.jsdelivr.net/npm/x_ite-off-parser@1.2.4/dist/x_ite-off-parser.min.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/x_ite-off-parser@1.3.0/dist/x_ite-off-parser.min.js"></script>
 <script type="module" src="https://cdn.jsdelivr.net/npm/x_ite@VERSION/dist/x_ite.min.mjs"></script>
 ```
 

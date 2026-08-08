@@ -163,6 +163,9 @@ __webpack_exports__default (X3D =>
 
          scene .rootNodes .push (shapeNode);
 
+         scene .addNamedNode (scene .getUniqueName ("Shape"), shapeNode);
+         scene .addExportedNode (scene .getUniqueExportName ("Shape"), shapeNode);
+
          return scene;
       }
 
