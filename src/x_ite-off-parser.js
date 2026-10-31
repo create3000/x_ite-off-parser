@@ -41,19 +41,19 @@ register (X3D =>
          this .points     = [ ];
       }
 
-      getEncoding ()
+      static getEncoding ()
       {
          return "STRING";
+      }
+
+      static isValid (input)
+      {
+         return input .match (/^OFF/);
       }
 
       setInput (input)
       {
          this .input = input;
-      }
-
-      isValid ()
-      {
-         return this .input .match (/^OFF/);
       }
 
       parseIntoScene (resolve, reject)
